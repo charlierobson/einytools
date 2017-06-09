@@ -10,8 +10,9 @@ BYTE myData[512];
 
 // maximum number of sectors is 10 per track, 80 tracks, single sided disk
 // - until the ROM handles different disk types this is all we can handle
-const int SPS = 10*80;
-int gSectorOffsets[SPS*2];
+// ... but for conversipon processes this limitation isn't present, so double
+//     the number of tracks stored so we can handle 2 sided images
+int gSectorOffsets[10*80*2];
 
 typedef struct
 {
@@ -183,7 +184,8 @@ void extractAll(char* inname, FILE* infile)
 	outp = strchr(outname, '.');
 	*outp = 0;
 
-	res = mkdir(outname, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+	//res = mkdir(outname, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH); // osx/linux
+	res = _mkdir(outname); // windows
 	printf("%s  res: %d", outname, res);
 
 	strcat(outname, "/");
